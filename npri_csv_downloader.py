@@ -5,7 +5,9 @@ import urllib.parse
 from pathlib import Path
 
 
-def download_npri_csv_with_selenium(url, company_name, download_dir="downloads", headless=True):
+def download_npri_csv_with_selenium(
+    url, company_name, download_dir="downloads", headless=True
+):
     """
     Navigate to NPRI website and download CSV data for a company.
 
@@ -147,15 +149,21 @@ def download_npri_csv_with_selenium(url, company_name, download_dir="downloads",
             # Make sure the download button is clickable
             try:
                 # Wait for the button to be clickable
-                clickable_button = wait.until(EC.element_to_be_clickable(download_button))
-                
+                clickable_button = wait.until(
+                    EC.element_to_be_clickable(download_button)
+                )
+
                 # Scroll to the button and make it visible
-                driver.execute_script("arguments[0].scrollIntoView(true);", clickable_button)
+                driver.execute_script(
+                    "arguments[0].scrollIntoView(true);", clickable_button
+                )
                 time.sleep(2)
-                
+
                 # Try to enable the button if it's disabled
-                driver.execute_script("arguments[0].removeAttribute('disabled');", clickable_button)
-                
+                driver.execute_script(
+                    "arguments[0].removeAttribute('disabled');", clickable_button
+                )
+
                 # Try JavaScript click first
                 try:
                     driver.execute_script("arguments[0].click();", clickable_button)
@@ -164,13 +172,15 @@ def download_npri_csv_with_selenium(url, company_name, download_dir="downloads",
                     # Fallback to regular click
                     clickable_button.click()
                     print("🖱️ Clicked download button using regular click")
-                    
+
             except TimeoutException:
                 # If button not clickable, try alternative methods
                 print("⚠️ Button not clickable, trying alternative approaches...")
-                
+
                 # Try to find and click any CSV-related links or buttons
-                csv_elements = driver.find_elements(By.XPATH, "//*[contains(text(), 'CSV')]")
+                csv_elements = driver.find_elements(
+                    By.XPATH, "//*[contains(text(), 'CSV')]"
+                )
                 for element in csv_elements:
                     try:
                         driver.execute_script("arguments[0].click();", element)
@@ -270,7 +280,9 @@ def process_single_company(company_name):
     print(f"URL: {url}")
 
     # Download CSV using Selenium (run in visible mode for debugging)
-    success, file_path, message = download_npri_csv_with_selenium(url, company_name, headless=False)
+    success, file_path, message = download_npri_csv_with_selenium(
+        url, company_name, headless=False
+    )
 
     if success:
         print(f"✅ SUCCESS: CSV downloaded for {company_name}")
